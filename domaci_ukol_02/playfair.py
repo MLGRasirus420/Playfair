@@ -1,15 +1,17 @@
+from string import ascii_uppercase
+
 def format_key(key):
     key = key.upper()
     key = remove_accents(key)
     key = replace_extra_character(key, 1)
     key = remove_duplicates(key)
-    
     return key
     
     
 
 def make_table(key):
     my_table = []
+    
 
 
 def remove_accents(my_text):
@@ -41,7 +43,23 @@ def replace_extra_character(my_text, lang):
 
 def remove_duplicates(my_text):
     return ''.join(dict.fromkeys(my_text))
+
+
+def form_alphabet(key):
+    """ Forms an alphabet without characters in the key and appends the key at
+     index 0 """
+    alphabet = ascii_uppercase
+    alphabet = replace_extra_character(alphabet, 0)
+    alphabet = remove_duplicates(alphabet)
+    for character in key:
+        alphabet = alphabet.replace(character, '')   
+    return split_by_x(key + alphabet, 5)
+           
                    
-                   
-                   
-print(format_key('KqLOTOC'))
+def split_by_x(my_text, x):
+    """ Inserts a space character in a string after x characters. """
+    return ' '.join(my_text[i:i + x] for i in range(0, len(my_text), x))
+
+
+print(len(form_alphabet('AHOI')))
+print(form_alphabet('AHOI'))
