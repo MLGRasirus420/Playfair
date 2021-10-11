@@ -3,16 +3,24 @@ from string import ascii_uppercase
 def format_key(key):
     key = key.upper()
     key = remove_accents(key)
-    key = replace_extra_character(key, 1)
+    key = replace_extra_character(key, 1)#replace number with lang
     key = remove_duplicates(key)
     return key
     
     
 
 def make_table(key):
-    my_table = []
-    
-
+    """ Creates a list and fills it with key + remaining alphabet strings size 5. """
+    my_list = ['', '', '', '', '']
+    key = format_key(key)
+    alphabet = form_alphabet(key)
+    i = 0
+    for character in alphabet:
+        if character == ' ':
+            i += 1
+            continue
+        my_list[i] += character
+    return my_list
 
 def remove_accents(my_text):
     """ Replaces accented letters. """
@@ -49,7 +57,7 @@ def form_alphabet(key):
     """ Forms an alphabet without characters in the key and appends the key at
      index 0 """
     alphabet = ascii_uppercase
-    alphabet = replace_extra_character(alphabet, 0)
+    alphabet = replace_extra_character(alphabet, 1)#replace number with lang
     alphabet = remove_duplicates(alphabet)
     for character in key:
         alphabet = alphabet.replace(character, '')   
@@ -61,5 +69,4 @@ def split_by_x(my_text, x):
     return ' '.join(my_text[i:i + x] for i in range(0, len(my_text), x))
 
 
-print(len(form_alphabet('AHOI')))
-print(form_alphabet('AHOI'))
+print(make_table('Ahojký'))
