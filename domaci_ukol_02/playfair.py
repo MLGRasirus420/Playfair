@@ -206,7 +206,7 @@ def decode(my_text, key):
     return replace_numbers(my_text, False)
 
 
-#encoded_message = encode('Ahoj, sejdeme se pod Můstkem po 9 té hodině.', 'Kolotoč')
-#print(encoded_message)
-decoded_message = decode('BGTHY RUOYR JSEFJ FYRUO YRDYU RLZWB ILURL ZUZYE TAIZU RLZWB YRUOY XVRRL YRUOY LDYUR LZPBI RSA', 'Kolotoč')
+encoded_message = encode('123456789', 'Kolotoč')
+print(encoded_message)
+decoded_message = decode('WLRVY LXYYL IWZDL WZDRL YRRLY RDYYD RLVRR L', 'Kolotoč')
 print(decoded_message)
