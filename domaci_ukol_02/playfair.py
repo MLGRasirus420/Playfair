@@ -1,7 +1,7 @@
 from string import ascii_uppercase
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QMessageBox
-from PyQt5 import QtGui, uic
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox
+from PyQt5 import uic
 
 
 def format_key(key, lang):
@@ -245,11 +245,14 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.errorMessage('Vstup nesmí být prázdný!')
         
     def decodeButtonClicked(self):
-        lang = self.checkLang()
-        my_text = self.inputText.toPlainText()
-        key = self.inputKey.text()
-        my_text = decode(my_text, key, lang)
-        self.outputText.setPlainText(my_text)
+        try:
+            lang = self.checkLang()
+            my_text = self.inputText.toPlainText()
+            key = self.inputKey.text()
+            my_text = decode(my_text, key, lang)
+            self.outputText.setPlainText(my_text)
+        except:
+            self.errorMessage('Vstup nesmí být prázdný!')
         
     def printAlphabet(self, key, lang):
         l_table = make_table(key, lang)
@@ -270,12 +273,18 @@ class MyApp(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        message = (' zadávejte v symbolech které jsou v abecedě A-Ž. '
+        'Diakritika bude upravena. '
+        'Cokoli jiného bude '
+        'automaticky smazáno.')
         self.encodeButton.clicked.connect(self.encodeButtonClicked)
         self.decodeButton.clicked.connect(self.decodeButtonClicked)
-        self.inputKey.setToolTip('Klíč zadávejte v symbolech které jsou v '
-                                 'anglické abecedě A-Z. Cokoli jiného bude ' 
-                                 'automaticky smazáno.')
-     
+        self.inputKey.setStatusTip('Klíč' + message)
+        self.inputText.setStatusTip('Text' + message + ' Nesmí být prázdné!')
+        self.czRadioButton.setStatusTip('Q prohodí za O')
+        self.enRadioButton.setStatusTip('J prohodí za I')
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
