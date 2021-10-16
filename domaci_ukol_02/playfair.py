@@ -243,6 +243,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.printAlphabet(key, lang)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
+
         
     def decodeButtonClicked(self):
         try:
@@ -253,6 +254,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
+
         
     def printAlphabet(self, key, lang):
         l_table = make_table(key, lang)
