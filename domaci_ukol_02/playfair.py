@@ -1,20 +1,23 @@
 from string import ascii_uppercase
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QMessageBox
+from PyQt5 import QtGui, uic
 
 
-def format_key(key):
+def format_key(key, lang):
     key = key.upper()
     key = remove_accents(key)
-    key = remove_non_letters(key)
-    key = replace_extra_character(key, 1)#replace number with lang
+    key = replace_extra_character(key, lang)#replace number with lang
+    key = remove_non_letters(key, lang)
     key = remove_duplicates(key)
     return key
     
     
-def make_table(key):
+def make_table(key, lang):
     """ Creates a list and fills it with key + remaining alphabet strings size 5. """
     my_list = ['', '', '', '', '']
-    key = format_key(key)
-    alphabet = form_alphabet(key)
+    key = format_key(key, lang)
+    alphabet = form_alphabet(key, lang)
     i = 0
     for character in alphabet:
         if character == ' ':
@@ -54,11 +57,11 @@ def remove_duplicates(my_text):
     return ''.join(dict.fromkeys(my_text))
 
 
-def form_alphabet(key):
+def form_alphabet(key, lang):
     """ Forms an alphabet without characters in the key and appends the key at
      index 0 """
     alphabet = ascii_uppercase
-    alphabet = replace_extra_character(alphabet, 1)#replace number with lang
+    alphabet = replace_extra_character(alphabet, lang)#replace number with lang
     alphabet = remove_duplicates(alphabet)
     for character in key:
         alphabet = alphabet.replace(character, '')   
@@ -95,10 +98,10 @@ def replace_numbers(my_text, mode):
     return my_text
 
 
-def remove_non_letters(my_text):
+def remove_non_letters(my_text, lang):
     """Removes letters that are not in alphabet."""
     for character in my_text[ : :-1]:
-        if character not in form_alphabet(''):#empty input = unchanged alphabet
+        if character not in form_alphabet('', lang):#empty input = unchanged alphabet
             my_text = my_text.replace(character, '')
     return my_text
 
@@ -125,22 +128,23 @@ def add_end_character(my_text):
     return my_text + substitute
     
     
-def format_input(my_text):
+def format_input(my_text, lang):
     my_text = my_text.upper()
     my_text = remove_accents(my_text)
+    my_text = replace_extra_character(my_text, lang)
     my_text = replace_spaces(my_text, True)
     my_text = replace_numbers(my_text, True)
-    my_text = remove_non_letters(my_text)
+    my_text = remove_non_letters(my_text, lang)
     my_text = remove_same_pairs(my_text)
     if len(my_text) % 2 != 0:
         my_text = add_end_character(my_text)
     return split_by_x(my_text, 2)
 
 
-def encode_decode_operation(my_text, key, mode):
+def encode_decode_operation(my_text, key, mode, lang):
     """ Encode - mode == 1, Decode - mode == -1"""
-    my_text = format_input(my_text)
-    table = make_table(key)
+    my_text = format_input(my_text, lang)
+    table = make_table(key, lang)
     encoded_decoded_text = ''
     i = 0
     while i <= len(my_text):
@@ -194,19 +198,86 @@ def find_index(character, table):
         line_index += 1
 
 
-def encode(my_text, key):
-    my_text = encode_decode_operation(my_text, key, 1) 
+def encode(my_text, key, lang):
+    my_text = encode_decode_operation(my_text, key, 1, lang) 
     return split_by_x(my_text, 5)
 
 
-def decode(my_text, key):
+def decode(my_text, key, lang):
     my_text = my_text.replace(' ', '')
-    my_text = encode_decode_operation(my_text, key, -1)
+    my_text = encode_decode_operation(my_text, key, -1, lang)
     my_text = replace_spaces(my_text, False) 
     return replace_numbers(my_text, False)
 
 
-encoded_message = encode('123456789', 'Kolotoč')
-print(encoded_message)
-decoded_message = decode('WLRVY LXYYL IWZDL WZDRL YRRLY RDYYD RLVRR L', 'Kolotoč')
-print(decoded_message)
+qtCreatorFile = "gui.ui" # Enter file here.
+ 
+Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
+ 
+class MyApp(QMainWindow, Ui_MainWindow):
+     
+    chyboveHlaseni = "Nektera z hodnot byla spatne zadana !!!"
+    
+    
+    def errorMessage(self, message):
+        error_message = QMessageBox()
+        error_message.setText(message)
+        error_message.setWindowTitle('Chyba!')
+        error_message.exec()
+        
+    
+    def checkLang(self):
+        if self.czRadioButton.isChecked():
+            return 1
+        elif self.enRadioButton.isChecked():
+            return 0
+
+    
+    def encodeButtonClicked(self):
+        try:
+            lang = self.checkLang()
+            my_text = self.inputText.toPlainText()
+            key = self.inputKey.text()
+            my_text = encode(my_text, key, lang)
+            self.outputText.setPlainText(my_text) 
+            self.printAlphabet(key, lang)
+        except:
+            self.errorMessage('Vstup nesmí být prázdný!')
+        
+    def decodeButtonClicked(self):
+        lang = self.checkLang()
+        my_text = self.inputText.toPlainText()
+        key = self.inputKey.text()
+        my_text = decode(my_text, key, lang)
+        self.outputText.setPlainText(my_text)
+        
+    def printAlphabet(self, key, lang):
+        l_table = make_table(key, lang)
+        s_table = ''
+        for element in l_table:
+            s_table += element
+        line = 0
+        row = 0
+        for char in s_table:
+            self.alphabet.setItem(line, row, QTableWidgetItem(char))
+            row += 1
+            if row == 5:
+                row = 0
+                line += 1
+        
+                         
+    def __init__(self):
+        QMainWindow.__init__(self)
+        Ui_MainWindow.__init__(self)
+        self.setupUi(self)
+        self.encodeButton.clicked.connect(self.encodeButtonClicked)
+        self.decodeButton.clicked.connect(self.decodeButtonClicked)
+        self.inputKey.setToolTip('Klíč zadávejte v symbolech které jsou v '
+                                 'anglické abecedě A-Z. Cokoli jiného bude ' 
+                                 'automaticky smazáno.')
+     
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MyApp()
+    window.show()
+    sys.exit(app.exec_())

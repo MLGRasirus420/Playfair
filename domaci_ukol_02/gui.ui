@@ -17,17 +17,17 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <widget class="QPlainTextEdit" name="input">
+   <widget class="QPlainTextEdit" name="inputText">
     <property name="geometry">
      <rect>
       <x>30</x>
       <y>50</y>
       <width>341</width>
-      <height>291</height>
+      <height>311</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="provedButton">
+   <widget class="QPushButton" name="encodeButton">
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -40,48 +40,13 @@
      <string>Zašifruj</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="output">
+   <widget class="QPlainTextEdit" name="outputText">
     <property name="geometry">
      <rect>
       <x>640</x>
       <y>50</y>
       <width>341</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="keyLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>60</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string comment="Klíč zadejte ve znacích od A-Z. Cokoli mimo se vymaže."/>
-    </property>
-    <property name="toolTipDuration">
-     <number>1</number>
-    </property>
-    <property name="statusTip">
-     <string/>
-    </property>
-    <property name="whatsThis">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="alphabet">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>170</y>
-      <width>191</width>
-      <height>171</height>
+      <height>311</height>
      </rect>
     </property>
     <property name="readOnly">
@@ -200,7 +165,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
+   <widget class="QRadioButton" name="czRadioButton">
     <property name="geometry">
      <rect>
       <x>470</x>
@@ -216,7 +181,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_2">
+   <widget class="QRadioButton" name="enRadioButton">
     <property name="geometry">
      <rect>
       <x>510</x>
@@ -229,7 +194,7 @@
      <string>EN</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="provedButton_2">
+   <widget class="QPushButton" name="decodeButton">
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -240,6 +205,82 @@
     </property>
     <property name="text">
      <string>Dešifruj</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="alphabet">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>171</y>
+      <width>190</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="showGrid">
+     <bool>true</bool>
+    </property>
+    <property name="rowCount">
+     <number>5</number>
+    </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <attribute name="horizontalHeaderHighlightSections">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>38</number>
+    </attribute>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <row/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+   </widget>
+   <widget class="QLineEdit" name="inputKey">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>60</y>
+      <width>231</width>
+      <height>20</height>
+     </rect>
     </property>
    </widget>
   </widget>
