@@ -54,6 +54,61 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="encodeButton">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>140</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zašifruj</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="decodeButton">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>140</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Odšifruj</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="czRadioButton">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>180</y>
+      <width>31</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CZ</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="enRadioButton">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>180</y>
+      <width>31</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>EN</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

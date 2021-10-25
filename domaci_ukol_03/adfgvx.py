@@ -6,37 +6,68 @@ qtCreatorFile = "gui.ui"
  
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
  
-def func():
-    return 0
+
+def remove_accents(my_text):
+    """ Replaces accented letters. """
+    dict_accents = {'Á': 'A', 'Č': 'C', 'Ď': 'D', 'Ě': 'E', 'É': 'E', 'Í': 'I',
+                    'Ň': 'N', 'Ó': 'O', 'Ř': 'R', 'Š': 'S', 'Ť': 'T', 'Ú': 'U',
+                    'Ů': 'U', 'Ý': 'Y', 'Ž': 'Z', }
+    for character in my_text:
+        if character in dict_accents:
+            my_text = my_text.replace(character, dict_accents.get(character))
+    return my_text
+
+
+def replace_extra_character(my_text, lang):
+    """ Replaces one character with another depending on the language chosen. 
+        0 = EN [J -> I], 1 = CZ [Q -> O] """
+    if(lang == 0):    
+        replaced = 'J'
+        replacement = 'I'
+    elif(lang == 1):
+        replaced = 'Q'
+        replacement = 'O'
+    else:
+        return -1    
+    return my_text.replace(replaced, replacement)
+
+
+def remove_non_letters(my_text, alphabetMatrix):
+    """Removes letters that are not in alphabet."""
+    for character in my_text[ : :-1]:
+        if character not in alphabetMatrix:
+            my_text = my_text.replace(character, '')
+    return my_text
+
+
+def format_key(key, lang, alphabet):
+    key = key.upper()
+    key = remove_accents(key)
+    key = replace_extra_character(key, lang)
+    key = remove_non_letters(key, alphabet)
+    return key
 
 
 class MyApp(QMainWindow, Ui_MainWindow):
+    adfgx_index = ['A', 'D', 'F', 'G', 'X']
+    adfgvx_index = ['A', 'D', 'F', 'G', 'V', 'X']
+    alphabet_cz = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+                  'Z']
+    alphabet_en = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M',
+                  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+                  'Z']
+    rand_alphabet = shuffle_alphabet()
     
-    defaultniTextTri = "Součet hodnot A + B + C = "
-    defaultniTextDvou = "Součet hodnot A + B = "
-    nevalidniVstupHlaska = "Nebylo zadané číslo !!!"
     
-    def SoucetDvouHodnot(self):
+    def checkLang(self):
+        if self.czRadioButton.isChecked():
+            return 1
+        elif self.enRadioButton.isChecked():
+            return 0
+                
 
-        try:
-            hodnotaA = int(self.lineEditHodnotaA.text())
-            hodnotaB = int(self.lineEditHodnotaB.text())
-            soucet = hodnotaA + hodnotaB
-            self.labelSoucetDvou.setText(self.defaultniTextDvou + str(soucet))
-        except:
-            self.labelSoucetDvou.setText(self.nevalidniVstupHlaska)
-        
-    def SoucetTriHodnot(self):
-
-        try:
-            hodnotaA = int(self.lineEditHodnotaA.text())
-            hodnotaB = int(self.lineEditHodnotaB.text())
-            hodnotaC = int(self.lineEditHodnotaC.text())
-            soucet = hodnotaA + hodnotaB + hodnotaC
-            self.labelSoucetTri.setText(self.defaultniTextTri + str(soucet))
-        except:
-            self.labelSoucetTri.setText(self.nevalidniVstupHlaska)
-                              
+    def encodeButtonClicked
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
