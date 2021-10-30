@@ -68,8 +68,20 @@ class MyApp(QMainWindow, Ui_MainWindow):
                   'Z']
     
     
+    def fill_tableWidget(self, alphabet):
+        """ Fills tableWidget """
+        line = 0
+        row = 0
+        for char in alphabet:
+            self.tableWidget.setItem(line, row, QTableWidgetItem(char))
+            row += 1
+            if row == 5:
+                row = 0
+                line += 1
+
+
     def rand_alphabet(self, alphabet_original):
-        alphabet = alphabet_original
+        alphabet = alphabet_original.copy()
         r_alphabet = []
 
         i = len(alphabet) - 1
@@ -103,7 +115,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def encodeButtonClicked(self):
         try:
             lang = self.checkLang()
-            alphabet = self.chooseAlphabet(lang)
+            alphabet = self.rand_alphabet(self.chooseAlphabet(lang))#temp untill table writing and reading finished
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             my_text = encode(my_text, key, lang, alphabet)
@@ -121,6 +133,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
+            
+    
+    def randTableButtonClicked(self):
+        alphabet = self.rand_alphabet(self.chooseAlphabet(self.checkLang()))
+        self.fill_tableWidget(alphabet)
                 
 
     def __init__(self):
@@ -129,6 +146,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.encodeButton.clicked.connect(self.encodeButtonClicked)
         self.decodeButton.clicked.connect(self.decodeButtonClicked)
+        self.randTableButton.clicked.connect(self.randTableButtonClicked)
 
      
 if __name__ == "__main__":
