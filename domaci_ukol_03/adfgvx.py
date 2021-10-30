@@ -1,6 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox
 from PyQt5 import QtGui, uic
+from random import randint
  
 qtCreatorFile = "gui.ui"
  
@@ -48,6 +49,14 @@ def format_key(key, lang, alphabet):
     return key
 
 
+def encode(my_text, key, lang, alphabet):
+    key = format_key(key, lang, alphabet)
+    return 0
+
+def decode():
+    return 0
+
+
 class MyApp(QMainWindow, Ui_MainWindow):
     adfgx_index = ['A', 'D', 'F', 'G', 'X']
     adfgvx_index = ['A', 'D', 'F', 'G', 'V', 'X']
@@ -57,7 +66,25 @@ class MyApp(QMainWindow, Ui_MainWindow):
     alphabet_en = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M',
                   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
                   'Z']
-    rand_alphabet = shuffle_alphabet()
+    
+    
+    def rand_alphabet(self, alphabet_original):
+        alphabet = alphabet_original
+        r_alphabet = []
+
+        i = len(alphabet) - 1
+        while alphabet:
+            index = randint(0, i)
+            r_alphabet.append(alphabet.pop(index))
+            i -= 1
+        return r_alphabet
+            
+        
+    def errorMessage(self, message):
+        error_message = QMessageBox()
+        error_message.setText(message)
+        error_message.setWindowTitle('Chyba!')
+        error_message.exec()
     
     
     def checkLang(self):
@@ -65,13 +92,43 @@ class MyApp(QMainWindow, Ui_MainWindow):
             return 1
         elif self.enRadioButton.isChecked():
             return 0
+        
+    def chooseAlphabet(self, lang):
+        if lang == 1:
+            return self.alphabet_cz
+        else:
+            return self.alphabet_en
+        
+        
+    def encodeButtonClicked(self):
+        try:
+            lang = self.checkLang()
+            alphabet = self.chooseAlphabet(lang)
+            my_text = self.inputText.toPlainText()
+            key = self.inputKey.text()
+            my_text = encode(my_text, key, lang, alphabet)
+            self.outputText.setPlainText(my_text)
+        except:
+            self.errorMessage('Vstup nesmí být prázdný!')
+
+        
+    def decodeButtonClicked(self):
+        try:
+            lang = self.checkLang()
+            my_text = self.inputText.toPlainText()
+            key = self.inputKey.text()
+            #my_text = decode(my_text, key, lang)
+            self.outputText.setPlainText(my_text)
+        except:
+            self.errorMessage('Vstup nesmí být prázdný!')
                 
 
-    def encodeButtonClicked
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.encodeButton.clicked.connect(self.encodeButtonClicked)
+        self.decodeButton.clicked.connect(self.decodeButtonClicked)
 
      
 if __name__ == "__main__":
@@ -79,3 +136,4 @@ if __name__ == "__main__":
     window = MyApp()
     window.show()
     sys.exit(app.exec_())
+    

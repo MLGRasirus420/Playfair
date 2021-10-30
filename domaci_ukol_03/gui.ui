@@ -20,7 +20,7 @@
       <x>80</x>
       <y>60</y>
       <width>331</width>
-      <height>411</height>
+      <height>461</height>
      </rect>
     </property>
    </widget>
@@ -30,7 +30,7 @@
       <x>820</x>
       <y>60</y>
       <width>331</width>
-      <height>411</height>
+      <height>461</height>
      </rect>
     </property>
    </widget>
@@ -38,17 +38,17 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>200</y>
+      <y>100</y>
       <width>256</width>
       <height>261</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="keyLine">
+   <widget class="QLineEdit" name="inputKey">
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>120</y>
+      <y>440</y>
       <width>256</width>
       <height>20</height>
      </rect>
@@ -58,7 +58,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>140</y>
+      <y>470</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -70,8 +70,8 @@
    <widget class="QPushButton" name="decodeButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>140</y>
+      <x>630</x>
+      <y>470</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -84,7 +84,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>180</y>
+      <y>80</y>
       <width>31</width>
       <height>17</height>
      </rect>
@@ -100,13 +100,39 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>180</y>
+      <y>80</y>
       <width>31</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>EN</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="randTable">
+    <property name="geometry">
+     <rect>
+      <x>494</x>
+      <y>370</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vygenerovat náhodně</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveTable">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>370</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Uložit tabulku</string>
     </property>
    </widget>
   </widget>
