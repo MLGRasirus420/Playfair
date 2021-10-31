@@ -19,7 +19,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
                   'Z']
     alphabet_six = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
-                  'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ]
+                  'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     #5x5: mode = True; 6x6: mode = False
     mode = True
     
@@ -228,12 +228,20 @@ class MyApp(QMainWindow, Ui_MainWindow):
         """ Fills tableWidget """
         line = 0
         row = 0
-        for char in alphabet:
-            self.tableWidget.setItem(line, row, QTableWidgetItem(char))
-            row += 1
-            if row == 5:
-                row = 0
-                line += 1
+        if self.mode == True:
+            for char in alphabet:
+                self.tableWidget.setItem(line, row, QTableWidgetItem(char))
+                row += 1
+                if row == 5:
+                    row = 0
+                    line += 1
+        else:
+            for char in alphabet:
+                self.tableWidgetSix.setItem(line, row, QTableWidgetItem(char))
+                row += 1
+                if row == 6:
+                    row = 0
+                    line += 1
 
 
     def rand_alphabet(self, alphabet_original):
@@ -266,8 +274,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.mode = True
         self.tableWidget.setHidden(False)
         self.tableWidgetSix.setHidden(True)
-        self.czRadioButton.move(530, 300)
-        self.enRadioButton.move(660, 300)
+        self.czRadioButton.setHidden(False)
+        self.enRadioButton.setHidden(False)
         self.randTableButton.move(520, 325)
         self.labelKey.move(595, 380)
         self.inputKey.move(520, 400)
@@ -278,19 +286,23 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.mode = False
         self.tableWidget.setHidden(True)
         self.tableWidgetSix.setHidden(False)
-        self.czRadioButton.move(530, 338)
-        self.enRadioButton.move(660, 338)
-        self.randTableButton.move(520, 363)
+        self.czRadioButton.setHidden(True)
+        self.enRadioButton.setHidden(True)
+        self.randTableButton.move(520, 335)
         self.labelKey.move(595, 418)
         self.inputKey.move(520, 438)
         self.encodeButton.move(520, 458)
         self.decodeButton.move(615, 458)
         
-    def choose_Alphabet(self, mode):
-        if lang == 1:
-            return self.alphabet_cz
+        
+    def choose_Alphabet(self, lang):
+        if self.mode == True:    
+            if lang == 1:
+                return self.alphabet_cz
+            else:
+                return self.alphabet_en
         else:
-            return self.alphabet_en
+            return self.alphabet_six
         
         
     def tableWidget_into_list(self):
@@ -347,15 +359,21 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.errorMessage('Vstup nesmí být prázdný!')
             
             
-    def randTableButtonClicked(self, mode):            
+    def randTableButtonClicked(self):            
         """On click generates random alphabet into tableWidget depending on
            language"""
-        if mode == True:
-            alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_lang()))
-            self.fill_tableWidget(alphabet)
+        if self.mode == True:
+            lang = self.check_lang()
+            if lang == 1:
+                alphabet = self.rand_alphabet(self.alphabet_cz)
+                self.fill_tableWidget(alphabet)
+            elif lang == 0:
+               alphabet = self.rand_alphabet(self.alphabet_en)
+               self.fill_tableWidget(alphabet) 
         else:
-           alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_lang()))
-            self.fill_tableWidget(alphabet) 
+            alphabet = self.rand_alphabet(self.alphabet_six)
+            self.fill_tableWidget(alphabet)
+
 
     def __init__(self):
         QMainWindow.__init__(self)
