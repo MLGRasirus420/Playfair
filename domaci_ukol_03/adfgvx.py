@@ -228,18 +228,28 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def format_input_output(self, my_text, lang, enc_or_dec, alphabet):
         """ Encode: enc_or_dec == True; Decode: enc_or_dec == False"""
-        if enc_or_dec == True:
+        if self.mode == True:    
+            if enc_or_dec == True:
                 my_text = my_text.upper()
                 my_text = self.remove_accents(my_text)
                 my_text = self.replace_spaces(my_text, enc_or_dec)
-        if self.mode == True:
-            my_text = self.replace_extra_character(my_text, lang)
-            my_text = self.remove_non_letters(my_text, alphabet) 
-            my_text = self.replace_numbers(my_text, enc_or_dec)
+                my_text = self.replace_extra_character(my_text, lang)
+                my_text = self.replace_numbers(my_text, enc_or_dec)
+                my_text = self.remove_non_letters(my_text, alphabet) 
+            else:
+                my_text = my_text.upper()
+                my_text = self.replace_spaces(my_text, enc_or_dec)
+                my_text = self.replace_numbers(my_text, enc_or_dec)
         else:
-            my_text = self.remove_non_letters(my_text, alphabet) 
-            my_text = self.replace_spaces(my_text, enc_or_dec)
-        my_text = self.replace_spaces(my_text, enc_or_dec)
+            if enc_or_dec == True:
+                my_text = my_text.upper()
+                my_text = self.remove_accents(my_text)
+                my_text = self.replace_spaces(my_text, enc_or_dec)
+                my_text = self.remove_non_letters(my_text, alphabet) 
+            else:
+                my_text = my_text.upper()
+                my_text = self.replace_spaces(my_text, enc_or_dec)
+                my_text = self.replace_numbers(my_text, enc_or_dec)
         return my_text
         
         
@@ -376,22 +386,31 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 if self.mode == True:
                     if lang == 1:
                         if element not in self.alphabet_cz:
-                            self.error_message('V tabulce musí být pouze'
-                                              'znaky A-Z a nesmí obsahovat '
-                                              'písmeno Q! To je nahrazeno '
-                                              'za O.')
+                            self.error_message('V tabulce pro český jazyk musí' 
+                                               ' být pouze znaky A-Z a nesmí '
+                                               'obsahovat písmeno Q! To je '
+                                               'nahrazeno za O. '
+                                               'Vygenerujte si novou tabulku '
+                                               'nebo si zkontroluje co jste ' 
+                                               'vepsali dovnitř.')
                             return -1
                     if lang == 0:
                         if element not in self.alphabet_en:
-                            self.error_message('V tabulce musí být pouze' 
-                                              'znaky A-Z a nesmí '
-                                              'obsahovat písmeno J! '
-                                              'To je nahrazeno za I.')
+                            self.error_message('V tabulce pro anglický jazyk '
+                                               'musí být pouze znaky A-Z '
+                                               'a nesmí obsahovat písmeno J! '
+                                               'To je nahrazeno za I. '
+                                               'Vygenerujte si novou tabulku '
+                                               'nebo si zkontroluje co jste ' 
+                                               'vepsali dovnitř.')
                             return -1
                 else:
                     if element not in self.alphabet_six:
-                        self.error_message('V tabulce musí být pouze '
-                                          'znaky A-Z a čísla 0-9!')
+                        self.error_message('V tabulce o velikosti 6x6 musí být' 
+                                           'pouze znaky A-Z a čísla 0-9! '
+                                           'Vygenerujte si novou tabulku '
+                                           'nebo si zkontroluje co jste ' 
+                                           'vepsali dovnitř.')
                         return -1
       
         
@@ -405,8 +424,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     
     def check_input_length(self, my_text, key):
-        if len(my_text) < len(key):
-                self.error_message('Vstup musí být alespoň stejně dlouhý jak klíč!')
+        if len(my_text) * 2 < len(key):
+                self.error_message('Délka vstupu * 2 musí být alespoň stejně' 
+                                   'dlouhý jak klíč!')
                 return -1
     
     
@@ -435,7 +455,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             my_text = self.format_input_output(my_text, lang, True, alphabet)
-            key = self.format_key(key, lang, alphabet)           
+            key = self.format_key(key, lang, alphabet)
+            if not key:
+                self.error_message('Klíč nesmí zůstat prázdný!')
+                return -1
             if self.check_input_length(my_text, key) == -1: return -1
             #encode
             my_text = self.encode(my_text, alphabet)
@@ -445,7 +468,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             my_text = self.encode_transposition(key_list, trans_table)
             self.outputText.setPlainText(my_text)
         except:
-            self.error_message('Ani klíč ani vstup nesmí být prázdný!')
+            self.error_message('Ani klíč, vstup ani tabulka nesmí být prázdné!')
 
         
     def decodeButtonClicked(self):
@@ -454,6 +477,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             alphabet = self.tableWidget_into_list()
             if self.check_table(lang, alphabet) == -1: return -1
             my_text = self.inputText.toPlainText()
+            my_text = my_text.upper()
             if self.check_decode_input(my_text, lang, alphabet) == -1: return -1
             key = self.inputKey.text()
             key = self.format_key(key, lang, alphabet)
@@ -467,7 +491,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             my_text = self.format_input_output(my_text, lang, False, alphabet)
             self.outputText.setPlainText(my_text)
         except:
-            self.error_message('Vstup nesmí být prázdný!')
+            self.error_message('Ani klíč, vstup ani tabulka nesmí být prázdné!')
             
             
     def randTableButtonClicked(self):            
