@@ -228,20 +228,17 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def format_input_output(self, my_text, lang, enc_or_dec, alphabet):
         """ Encode: enc_or_dec == True; Decode: enc_or_dec == False"""
-        if self.mode == True:
-            if enc_or_dec == True:
+        if enc_or_dec == True:
                 my_text = my_text.upper()
                 my_text = self.remove_accents(my_text)
-                my_text = self.replace_extra_character(my_text, lang)
-            my_text = self.replace_spaces(my_text, enc_or_dec)
+                my_text = self.replace_spaces(my_text, enc_or_dec)
+        if self.mode == True:
+            my_text = self.replace_extra_character(my_text, lang)
             my_text = self.replace_numbers(my_text, enc_or_dec)
             if enc_or_dec == True:
                 my_text = self.remove_non_letters(my_text, alphabet) 
         else:
-            if enc_or_dec == True:
-                my_text = my_text.upper()
-                my_text = self.remove_accents(my_text)
-                my_text = self.remove_non_letters(my_text, alphabet) 
+            my_text = self.remove_non_letters(my_text, alphabet) 
             my_text = self.replace_spaces(my_text, enc_or_dec)
         return my_text
         
