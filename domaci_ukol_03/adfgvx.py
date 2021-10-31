@@ -17,6 +17,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
     alphabet_en = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M',
                   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
                   'Z']
+    alphabet_six = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+                  'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ]
+    #5x5: mode = True; 6x6: mode = False
+    mode = True
     
     def encode(self, my_text, alphabet):
         encoded_text = ''
@@ -28,9 +33,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return encoded_text
 
     
-    def switch_indexes(self, my_text, mode):
-        #Encode: mode == True; Decode: mode == False
-        if mode == True:
+    def switch_indexes(self, my_text, enc_or_dec):
+        #Encode: enc_or_dec == True; Decode: enc_or_dec == False
+        if enc_or_dec == True:
             for character in my_text:
                 my_text = my_text.replace(character, self.adfgx_index.get(character))
         else:
@@ -165,12 +170,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return my_text.replace(replaced, replacement)
     
     
-    def replace_numbers(self, my_text, mode):
+    def replace_numbers(self, my_text, enc_or_dec):
         """Replaces numbers with abbreviations if true. """
         dict_numbers = {'1': 'XONX', '2': 'XTWX', '3': 'XTHX', '4': 'XFOX',
                         '5': 'XFIX', '6': 'XSIX',
                         '7': 'XSEX', '8': 'XEIX', '9': 'XNIX', '0': 'XZEX', }
-        if mode == True:
+        if enc_or_dec == True:
             for character in my_text:
                     if character in dict_numbers:
                         my_text = my_text.replace(character, 
@@ -181,10 +186,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return my_text
 
 
-    def replace_spaces(self, my_text, mode):
+    def replace_spaces(self, my_text, enc_or_dec):
         """ Replaces spaces with XSPCX if True. Else replaces XSPC with a space. 
         """
-        if mode == True:
+        if enc_or_dec == True:
             return my_text.replace(' ', 'XSPCX')
         else:
             return my_text.replace('XSPCX', ' ')
@@ -206,15 +211,15 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return key
     
     
-    def format_input_output(self, my_text, lang, mode, alphabet):
-        """ Encode: Mode == True; Decode: Mode == False"""
-        if mode == True:
+    def format_input_output(self, my_text, lang, enc_or_dec, alphabet):
+        """ Encode: enc_or_dec == True; Decode: enc_or_dec == False"""
+        if enc_or_dec == True:
             my_text = my_text.upper()
             my_text = self.remove_accents(my_text)
             my_text = self.replace_extra_character(my_text, lang)
-        my_text = self.replace_spaces(my_text, mode)
-        my_text = self.replace_numbers(my_text, mode)
-        if mode == True:
+        my_text = self.replace_spaces(my_text, enc_or_dec)
+        my_text = self.replace_numbers(my_text, enc_or_dec)
+        if enc_or_dec == True:
             my_text = self.remove_non_letters(my_text, alphabet)  
         return my_text
         
@@ -250,14 +255,38 @@ class MyApp(QMainWindow, Ui_MainWindow):
         error_message.exec()
     
     
-    def check_Lang(self):
+    def check_lang(self):
         if self.czRadioButton.isChecked():
             return 1
         elif self.enRadioButton.isChecked():
             return 0
+    
+    
+    def choose_mode_five(self):
+        self.mode = True
+        self.tableWidget.setHidden(False)
+        self.tableWidgetSix.setHidden(True)
+        self.czRadioButton.move(530, 300)
+        self.enRadioButton.move(660, 300)
+        self.randTableButton.move(520, 325)
+        self.labelKey.move(595, 380)
+        self.inputKey.move(520, 400)
+        self.encodeButton.move(520, 420)
+        self.decodeButton.move(615, 420)
         
+    def choose_mode_six(self):
+        self.mode = False
+        self.tableWidget.setHidden(True)
+        self.tableWidgetSix.setHidden(False)
+        self.czRadioButton.move(530, 338)
+        self.enRadioButton.move(660, 338)
+        self.randTableButton.move(520, 363)
+        self.labelKey.move(595, 418)
+        self.inputKey.move(520, 438)
+        self.encodeButton.move(520, 458)
+        self.decodeButton.move(615, 458)
         
-    def choose_Alphabet(self, lang):
+    def choose_Alphabet(self, mode):
         if lang == 1:
             return self.alphabet_cz
         else:
@@ -279,7 +308,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def encodeButtonClicked(self):
         try:
-            lang = self.check_Lang()
+            lang = self.check_lang()
             alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
@@ -299,7 +328,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
     def decodeButtonClicked(self):
         try:
-            lang = self.check_Lang()
+            lang = self.check_lang()
             alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
@@ -318,20 +347,27 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.errorMessage('Vstup nesmí být prázdný!')
             
             
-    def randTableButtonClicked(self):            
+    def randTableButtonClicked(self, mode):            
         """On click generates random alphabet into tableWidget depending on
            language"""
-        alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_Lang()))
-        self.fill_tableWidget(alphabet)
-                
+        if mode == True:
+            alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_lang()))
+            self.fill_tableWidget(alphabet)
+        else:
+           alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_lang()))
+            self.fill_tableWidget(alphabet) 
 
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.tableWidgetSix.setHidden(True)
         self.encodeButton.clicked.connect(self.encodeButtonClicked)
         self.decodeButton.clicked.connect(self.decodeButtonClicked)
         self.randTableButton.clicked.connect(self.randTableButtonClicked)
+        self.modeButtonFive.clicked.connect(self.choose_mode_five)
+        self.modeButtonSix.clicked.connect(self.choose_mode_six)
+
 
      
 if __name__ == "__main__":
