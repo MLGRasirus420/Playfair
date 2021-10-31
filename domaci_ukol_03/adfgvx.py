@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox
 from PyQt5 import QtGui, uic
 from random import randint
+from math import floor
  
 qtCreatorFile = "gui.ui"
  
@@ -17,14 +18,119 @@ class MyApp(QMainWindow, Ui_MainWindow):
                   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
                   'Z']
     
-    def encode(self, my_text, key, lang, alphabet):
-        return 0
+    def encode(self, my_text, alphabet):
+        encoded_text = ''
+        for character in my_text:
+            index = alphabet.index(character)
+            row = floor(index / 5)
+            column = index % 5
+            encoded_text += str(row) + str(column)
+        return encoded_text
 
-
-    def decode(self):
-        return 0
+    
+    def switch_indexes(self, my_text, mode):
+        #Encode: mode == True; Decode: mode == False
+        if mode == True:
+            for character in my_text:
+                my_text = my_text.replace(character, self.adfgx_index.get(character))
+        else:
+            for key, value in self.adfgx_index.items():
+                my_text = my_text.replace(value, key)
+        return my_text
     
     
+    def make_key_list(self, key):
+        key_list = []
+        key_char_index = 0
+        for character in key:
+            key_list.append(character + str(key_char_index))
+            key_char_index += 1
+        return sorted(key_list)
+    
+    
+    def make_encode_trans_table(self, key, my_text):
+        trans_table = []
+        temp_list = []
+        key_length = len(key)
+        i = 0
+        for character in my_text:
+            temp_list.append(character)
+            i += 1
+            if i == key_length:
+                trans_table.append(temp_list)
+                temp_list = []
+                i = 0 
+        
+        while i <= key_length - 1:
+            temp_list.append('')
+            i += 1
+        trans_table.append(temp_list)
+        
+        return trans_table
+
+
+    def encode_transposition(self, sorted_key_list, trans_table):
+        my_text = ''
+        for element in sorted_key_list:
+            i = 0
+            while i < len(trans_table):
+                my_text += trans_table[i][int(element[1])]
+                i += 1
+            my_text += ' '
+        return my_text
+
+    
+    def decode(self, my_text):
+        
+        return 0
+        
+    def make_decode_trans_table(self, my_text, key):
+        #prepare empty trans table
+        trans_table = []
+        #inserting data into transtable
+        row = 0
+        column = 0
+        for character in my_text:
+            if character == ' ':
+                row = 0
+                column += 1
+                continue
+            if row == 0:
+                trans_table.append([character])
+                row += 1
+            else:
+                trans_table[column].append(character)
+         
+        return trans_table
+        
+
+    def decode_trans_list_order(self, sorted_key ,trans_table):
+        #finding correct order
+        order = ''
+        key_length = len(sorted_key)
+        i = 0
+        while i < key_length:
+            for element in sorted_key:
+                if element[1] == str(i):
+                    order += str(sorted_key.index(element))
+                    i += 1
+        #applying order
+        ordered_list = []
+        for character in order:
+            ordered_list.append(trans_table[int(character)])
+        return ordered_list
+
+
+    def decode_trans(self, ordered_list):
+        trans_string = ''
+        while ordered_list:
+            try:
+                for element in ordered_list:
+                    trans_string += element.pop(0)
+            except IndexError:
+                return trans_string 
+        
+        
     def remove_accents(self, my_text):
         """ Replaces accented letters. """
         dict_accents = {'Á': 'A', 'Č': 'C', 'Ď': 'D', 'Ě': 'E', 'É': 'E', 'Í': 'I',
@@ -48,6 +154,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         else:
             return -1    
         return my_text.replace(replaced, replacement)
+    
     
     def replace_numbers(self, my_text, mode):
         """Replaces numbers with abbreviations if true. """
@@ -132,28 +239,48 @@ class MyApp(QMainWindow, Ui_MainWindow):
         error_message.exec()
     
     
-    def checkLang(self):
+    def check_Lang(self):
         if self.czRadioButton.isChecked():
             return 1
         elif self.enRadioButton.isChecked():
             return 0
         
-    def chooseAlphabet(self, lang):
+        
+    def choose_Alphabet(self, lang):
         if lang == 1:
             return self.alphabet_cz
         else:
             return self.alphabet_en
         
         
+    def read_tableWidget(self):
+        alphabet = []
+        row = 0
+        column = 0
+        while row <= 4:
+            alphabet.append((self.tableWidget.item(row, column).text()))
+            column += 1
+            if column == 5:
+                column = 0
+                row += 1
+        return alphabet
+    
+    
     def encodeButtonClicked(self):
         try:
-            lang = self.checkLang()
-            alphabet = self.rand_alphabet(self.chooseAlphabet(lang))#temp until table writing and reading finished
+            lang = self.check_Lang()
+            alphabet = self.read_tableWidget()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             my_text = self.format_input(my_text, lang, True, alphabet)
             key = self.format_key(key, lang, alphabet)
-            #my_text = encode(my_text, key, alphabet)#alphabet will be replaced with func which reads from the table
+            
+            my_text = self.encode(my_text, alphabet)
+            my_text = self.switch_indexes(my_text, True)
+            key_list = self.make_key_list(key)
+            trans_table = self.make_encode_trans_table(key, my_text)
+            my_text = self.encode_transposition(key_list, trans_table)
+            
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
@@ -161,19 +288,28 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
     def decodeButtonClicked(self):
         try:
-            lang = self.checkLang()
+            lang = self.check_Lang()
+            alphabet = self.read_tableWidget()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
-            #my_text = decode(my_text, key, lang)
+            key = self.format_key(key, lang, alphabet)
+            sorted_key_list = self.make_key_list(key)
+            
+            #Decode
+            key_list = self.make_key_list(key)
+            trans_table = self.make_decode_trans_table(my_text, key)
+            ordered_trans_list = self.decode_trans_list_order(sorted_key_list, trans_table)
+            my_text = self.decode_trans(ordered_trans_list)
+            
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
             
-    
-    def randTableButtonClicked(self):
+            
+    def randTableButtonClicked(self):            
         """On click generates random alphabet into tableWidget depending on
            language"""
-        alphabet = self.rand_alphabet(self.chooseAlphabet(self.checkLang()))
+        alphabet = self.rand_alphabet(self.choose_Alphabet(self.check_Lang()))
         self.fill_tableWidget(alphabet)
                 
 
