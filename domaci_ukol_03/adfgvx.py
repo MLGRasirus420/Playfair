@@ -309,12 +309,20 @@ class MyApp(QMainWindow, Ui_MainWindow):
         alphabet = []
         row = 0
         column = 0
-        while row <= 4:
-            alphabet.append((self.tableWidget.item(row, column).text()))
-            column += 1
-            if column == 5:
-                column = 0
-                row += 1
+        if self.mode == True:
+            while row <= 4:
+                alphabet.append((self.tableWidget.item(row, column).text()))
+                column += 1
+                if column == 5:
+                    column = 0
+                    row += 1
+        else:
+            while row <= 5:
+                alphabet.append((self.tableWidgetSix.item(row, column).text()))
+                column += 1
+                if column == 6:
+                    column = 0
+                    row += 1
         return alphabet
     
     
