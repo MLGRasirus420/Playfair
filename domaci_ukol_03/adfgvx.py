@@ -105,7 +105,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
         while i < length:
             column = int(my_text[i])
             row = int(my_text[i - 1])
-            decoded_text += self.tableWidget.item(row, column).text()
+            if self.mode == True:
+                decoded_text += self.tableWidget.item(row, column).text()
+            else:
+                decoded_text += self.tableWidgetSix.item(row, column).text()
             i += 2
         return decoded_text
        
