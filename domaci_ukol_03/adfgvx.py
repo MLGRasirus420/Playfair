@@ -10,7 +10,7 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
  
 class MyApp(QMainWindow, Ui_MainWindow):
     adfgx_index = {'0':'A', '1':'D', '2':'F', '3':'G', '4':'X'}
-    adfgvx_index = ['A', 'D', 'F', 'G', 'V', 'X']
+    adfgvx_index = {'0':'A', '1':'D', '2':'F', '3':'G', '4':'V', '5':'X'}
     alphabet_cz = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
                   'Z']
@@ -39,12 +39,20 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def switch_indexes(self, my_text, enc_or_dec):
         #Encode: enc_or_dec == True; Decode: enc_or_dec == False
-        if enc_or_dec == True:
-            for character in my_text:
-                my_text = my_text.replace(character, self.adfgx_index.get(character))
+        if self.mode == True:
+            if enc_or_dec == True:
+                for character in my_text:
+                    my_text = my_text.replace(character, self.adfgx_index.get(character))
+            else:
+                for key, value in self.adfgx_index.items():
+                    my_text = my_text.replace(value, key)
         else:
-            for key, value in self.adfgx_index.items():
-                my_text = my_text.replace(value, key)
+            if enc_or_dec == True:
+                for character in my_text:
+                    my_text = my_text.replace(character, self.adfgvx_index.get(character))
+            else:
+                for key, value in self.adfgvx_index.items():
+                    my_text = my_text.replace(value, key)
         return my_text
     
     
