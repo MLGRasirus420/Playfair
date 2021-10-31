@@ -235,11 +235,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
         if self.mode == True:
             my_text = self.replace_extra_character(my_text, lang)
             my_text = self.replace_numbers(my_text, enc_or_dec)
-            if enc_or_dec == True:
-                my_text = self.remove_non_letters(my_text, alphabet) 
+            my_text = self.remove_non_letters(my_text, alphabet) 
         else:
             my_text = self.remove_non_letters(my_text, alphabet) 
             my_text = self.replace_spaces(my_text, enc_or_dec)
+        my_text = self.replace_spaces(my_text, enc_or_dec)
         return my_text
         
         
@@ -345,21 +345,61 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return alphabet
     
     
+    def check_for_numbers(self, alphabet):
+        if self.mode == True:
+                for element in alphabet:
+                    if ord(element) >= 48 and ord(element) <= 57:
+                        self.errorMessage('V tabulce nesmí být čísla!')
+                        return -1
+        
+    
     def encodeButtonClicked(self):
         try:
             lang = self.check_lang()
             alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
+            if self.mode == True:
+                for element in alphabet:
+                    if ord(element) >= 48 and ord(element) <= 57:
+                        self.errorMessage('V tabulce nesmí být čísla!')
+                        return -1
+            if len(list(dict.fromkeys(alphabet))) < 25:
+                self.errorMessage('V tabulce se nesmí nacházet duplicitní znaky!')
+                return -1
+            for element in alphabet:
+                if self.mode == True:
+                    if lang == 1:
+                        if element not in self.alphabet_cz:
+                            self.errorMessage('V tabulce musí být pouze'
+                                              'znaky A-Z! A nesmí obsahovat'
+                                              'písmeno Q! To je nahrazeno '
+                                              'za O.')
+                            return -1
+                    if lang == 0:
+                        if element not in self.alphabet_en:
+                            self.errorMessage('V tabulce musí být pouze' 
+                                              'znaky A-Z! A nesmí '
+                                              'obsahovat písmeno J! '
+                                              'To je nahrazeno za I.')
+                            return -1
+                else:
+                    if element not in self.alphabet_six:
+                        self.errorMessage('V tabulce musí být pouze '
+                                          'znaky A-Z a čísla 0-9!')
+                        return -1
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             my_text = self.format_input_output(my_text, lang, True, alphabet)
-            key = self.format_key(key, lang, alphabet)
+            key = self.format_key(key, lang, alphabet)           
             
+            if len(my_text) < len(key):
+                self.errorMessage('Vstup musí být alespoň stejně dlouhý jak klíč!')
+                return -1
+            #encode
             my_text = self.encode(my_text, alphabet)
             my_text = self.switch_indexes(my_text, True)
             key_list = self.make_key_list(key)
             trans_table = self.make_encode_trans_table(key, my_text)
             my_text = self.encode_transposition(key_list, trans_table)
-            
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
@@ -374,7 +414,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
             key = self.format_key(key, lang, alphabet)
             sorted_key_list = self.make_key_list(key)
             
-            #Decode
+            if len(my_text) < len(key):
+                self.errorMessage('Vstup musí být alespoň stejně dlouhý jak klíč!')
+                return -1
+            
+            #decode
             trans_table = self.make_decode_trans_table(my_text, key)
             ordered_trans_list = self.decode_trans_list_order(sorted_key_list, trans_table)
             my_text = self.decode_trans(ordered_trans_list)
