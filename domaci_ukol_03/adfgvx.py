@@ -25,10 +25,14 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def encode(self, my_text, alphabet):
         encoded_text = ''
+        if self.mode == True:
+            size = 5
+        else:
+            size = 6
         for character in my_text:
             index = alphabet.index(character)
-            row = floor(index / 5)
-            column = index % 5
+            row = floor(index / size)
+            column = index % size
             encoded_text += str(row) + str(column)
         return encoded_text
 
@@ -213,14 +217,21 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def format_input_output(self, my_text, lang, enc_or_dec, alphabet):
         """ Encode: enc_or_dec == True; Decode: enc_or_dec == False"""
-        if enc_or_dec == True:
-            my_text = my_text.upper()
-            my_text = self.remove_accents(my_text)
-            my_text = self.replace_extra_character(my_text, lang)
-        my_text = self.replace_spaces(my_text, enc_or_dec)
-        my_text = self.replace_numbers(my_text, enc_or_dec)
-        if enc_or_dec == True:
-            my_text = self.remove_non_letters(my_text, alphabet)  
+        if self.mode == True:
+            if enc_or_dec == True:
+                my_text = my_text.upper()
+                my_text = self.remove_accents(my_text)
+                my_text = self.replace_extra_character(my_text, lang)
+            my_text = self.replace_spaces(my_text, enc_or_dec)
+            my_text = self.replace_numbers(my_text, enc_or_dec)
+            if enc_or_dec == True:
+                my_text = self.remove_non_letters(my_text, alphabet) 
+        else:
+            if enc_or_dec == True:
+                my_text = my_text.upper()
+                my_text = self.remove_accents(my_text)
+                my_text = self.remove_non_letters(my_text, alphabet) 
+            my_text = self.replace_spaces(my_text, enc_or_dec)
         return my_text
         
         
