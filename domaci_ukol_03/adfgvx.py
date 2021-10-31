@@ -81,9 +81,18 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
     
     def decode(self, my_text):
-        
-        return 0
-        
+        #finds a character in the tableWidget based on index
+        decoded_text = ''
+        length = len(my_text)
+        i = 1
+        while i < length:
+            column = int(my_text[i])
+            row = int(my_text[i - 1])
+            decoded_text += self.tableWidget.item(row, column).text()
+            i += 2
+        return decoded_text
+       
+    
     def make_decode_trans_table(self, my_text, key):
         #prepare empty trans table
         trans_table = []
@@ -197,14 +206,16 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return key
     
     
-    def format_input(self, my_text, lang, mode, alphabet):
+    def format_input_output(self, my_text, lang, mode, alphabet):
         """ Encode: Mode == True; Decode: Mode == False"""
-        my_text = my_text.upper()
-        my_text = self.remove_accents(my_text)
-        my_text = self.replace_extra_character(my_text, lang)
+        if mode == True:
+            my_text = my_text.upper()
+            my_text = self.remove_accents(my_text)
+            my_text = self.replace_extra_character(my_text, lang)
         my_text = self.replace_spaces(my_text, mode)
         my_text = self.replace_numbers(my_text, mode)
-        my_text = self.remove_non_letters(my_text, alphabet)
+        if mode == True:
+            my_text = self.remove_non_letters(my_text, alphabet)  
         return my_text
         
         
@@ -253,7 +264,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             return self.alphabet_en
         
         
-    def read_tableWidget(self):
+    def tableWidget_into_list(self):
         alphabet = []
         row = 0
         column = 0
@@ -269,10 +280,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def encodeButtonClicked(self):
         try:
             lang = self.check_Lang()
-            alphabet = self.read_tableWidget()#add remove numbers, remove duplicates
+            alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
-            my_text = self.format_input(my_text, lang, True, alphabet)
+            my_text = self.format_input_output(my_text, lang, True, alphabet)
             key = self.format_key(key, lang, alphabet)
             
             my_text = self.encode(my_text, alphabet)
@@ -289,18 +300,19 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def decodeButtonClicked(self):
         try:
             lang = self.check_Lang()
-            alphabet = self.read_tableWidget()#add remove numbers, remove duplicates
+            alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             key = self.format_key(key, lang, alphabet)
             sorted_key_list = self.make_key_list(key)
             
             #Decode
-            key_list = self.make_key_list(key)
             trans_table = self.make_decode_trans_table(my_text, key)
             ordered_trans_list = self.decode_trans_list_order(sorted_key_list, trans_table)
             my_text = self.decode_trans(ordered_trans_list)
-            
+            my_text = self.switch_indexes(my_text, False)
+            my_text = self.decode(my_text)
+            my_text = self.format_input_output(my_text, lang, False, alphabet)
             self.outputText.setPlainText(my_text)
         except:
             self.errorMessage('Vstup nesmí být prázdný!')
