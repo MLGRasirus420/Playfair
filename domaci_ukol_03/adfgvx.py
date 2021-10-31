@@ -305,11 +305,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.tableWidgetSix.setHidden(True)
         self.czRadioButton.setHidden(False)
         self.enRadioButton.setHidden(False)
-        self.randTableButton.move(520, 325)
-        self.labelKey.move(595, 380)
-        self.inputKey.move(520, 400)
-        self.encodeButton.move(520, 420)
-        self.decodeButton.move(615, 420)
+        self.randTableButton.move(520, 475)
+        self.labelKey.move(595, 530)
+        self.inputKey.move(520, 550)
+        self.encodeButton.move(520, 570)
+        self.decodeButton.move(615, 570)
         
         
     def choose_mode_six(self):
@@ -318,11 +318,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.tableWidgetSix.setHidden(False)
         self.czRadioButton.setHidden(True)
         self.enRadioButton.setHidden(True)
-        self.randTableButton.move(520, 335)
-        self.labelKey.move(595, 418)
-        self.inputKey.move(520, 438)
-        self.encodeButton.move(520, 458)
-        self.decodeButton.move(615, 458)
+        self.randTableButton.move(520, 483)
+        self.labelKey.move(595, 530)
+        self.inputKey.move(520, 550)
+        self.encodeButton.move(520, 570)
+        self.decodeButton.move(615, 570)
         
         
     def choose_Alphabet(self, lang):
@@ -425,8 +425,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     def check_input_length(self, my_text, key):
         if len(my_text) * 2 < len(key):
-                self.error_message('Délka vstupu * 2 musí být alespoň stejně' 
-                                   'dlouhý jak klíč!')
+                self.error_message('Délka vstupu * 2 musí být alespoň stejně ' 
+                                   'dlouhá jak klíč!')
                 return -1
     
     
