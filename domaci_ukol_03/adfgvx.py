@@ -234,8 +234,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 my_text = self.replace_spaces(my_text, enc_or_dec)
         if self.mode == True:
             my_text = self.replace_extra_character(my_text, lang)
-            my_text = self.replace_numbers(my_text, enc_or_dec)
             my_text = self.remove_non_letters(my_text, alphabet) 
+            my_text = self.replace_numbers(my_text, enc_or_dec)
         else:
             my_text = self.remove_non_letters(my_text, alphabet) 
             my_text = self.replace_spaces(my_text, enc_or_dec)
@@ -275,7 +275,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return r_alphabet
             
         
-    def errorMessage(self, message):
+    def error_message(self, message):
         error_message = QMessageBox()
         error_message.setText(message)
         error_message.setWindowTitle('Chyba!')
@@ -300,6 +300,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.inputKey.move(520, 400)
         self.encodeButton.move(520, 420)
         self.decodeButton.move(615, 420)
+        
         
     def choose_mode_six(self):
         self.mode = False
@@ -349,51 +350,93 @@ class MyApp(QMainWindow, Ui_MainWindow):
         if self.mode == True:
                 for element in alphabet:
                     if ord(element) >= 48 and ord(element) <= 57:
-                        self.errorMessage('V tabulce nesmí být čísla!')
+                        self.error_message('V tabulce nesmí být čísla!')
                         return -1
         
-    
-    def encodeButtonClicked(self):
-        try:
-            lang = self.check_lang()
-            alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
-            if self.mode == True:
-                for element in alphabet:
-                    if ord(element) >= 48 and ord(element) <= 57:
-                        self.errorMessage('V tabulce nesmí být čísla!')
+        
+    def check_for_numbers_decode_input(self, my_text):
+        for character in my_text:
+                    if ord(character) >= 48 and ord(character) <= 57:
+                        self.error_message('Na vstupu nesmí být čísla!')
                         return -1
-            if len(list(dict.fromkeys(alphabet))) < 25:
-                self.errorMessage('V tabulce se nesmí nacházet duplicitní znaky!')
+      
+        
+    def check_for_duplicates(self, alphabet):
+        if self.mode == True:
+            size = 25
+        else:
+            size = 36
+        if len(list(dict.fromkeys(alphabet))) < size:
+                self.error_message('V tabulce se nesmí nacházet duplicitní znaky!')
                 return -1
-            for element in alphabet:
+    
+    
+    def check_for_unallowed_characters(self, lang, alphabet):
+        for element in alphabet:
                 if self.mode == True:
                     if lang == 1:
                         if element not in self.alphabet_cz:
-                            self.errorMessage('V tabulce musí být pouze'
-                                              'znaky A-Z! A nesmí obsahovat'
+                            self.error_message('V tabulce musí být pouze'
+                                              'znaky A-Z a nesmí obsahovat '
                                               'písmeno Q! To je nahrazeno '
                                               'za O.')
                             return -1
                     if lang == 0:
                         if element not in self.alphabet_en:
-                            self.errorMessage('V tabulce musí být pouze' 
-                                              'znaky A-Z! A nesmí '
+                            self.error_message('V tabulce musí být pouze' 
+                                              'znaky A-Z a nesmí '
                                               'obsahovat písmeno J! '
                                               'To je nahrazeno za I.')
                             return -1
                 else:
                     if element not in self.alphabet_six:
-                        self.errorMessage('V tabulce musí být pouze '
+                        self.error_message('V tabulce musí být pouze '
                                           'znaky A-Z a čísla 0-9!')
                         return -1
+      
+        
+    def check_table(self, lang, alphabet):
+        result = self.check_for_numbers(alphabet)
+        if result: return result
+        result = self.check_for_duplicates(alphabet)
+        if result: return result
+        result = self.check_for_unallowed_characters(lang, alphabet)
+        if result: return result
+    
+    
+    def check_input_length(self, my_text, key):
+        if len(my_text) < len(key):
+                self.error_message('Vstup musí být alespoň stejně dlouhý jak klíč!')
+                return -1
+    
+    
+    def check_for_unallowed_characters_decode_input(self, my_text, alphabet):
+        result = 0
+        for character in my_text:
+            if character == ' ':
+                continue
+            if character not in alphabet:
+                result = -1
+        return result
+    
+    
+    def check_decode_input(self, my_text, lang, alphabet):
+        result = self.check_for_numbers_decode_input(my_text)
+        if result: return result
+        result = self.check_for_unallowed_characters_decode_input(my_text, alphabet)
+        if result: return result
+        
+        
+    def encodeButtonClicked(self):
+        try:
+            lang = self.check_lang()
+            alphabet = self.tableWidget_into_list()
+            if self.check_table(lang, alphabet) == -1: return -1
             my_text = self.inputText.toPlainText()
             key = self.inputKey.text()
             my_text = self.format_input_output(my_text, lang, True, alphabet)
             key = self.format_key(key, lang, alphabet)           
-            
-            if len(my_text) < len(key):
-                self.errorMessage('Vstup musí být alespoň stejně dlouhý jak klíč!')
-                return -1
+            if self.check_input_length(my_text, key) == -1: return -1
             #encode
             my_text = self.encode(my_text, alphabet)
             my_text = self.switch_indexes(my_text, True)
@@ -402,22 +445,19 @@ class MyApp(QMainWindow, Ui_MainWindow):
             my_text = self.encode_transposition(key_list, trans_table)
             self.outputText.setPlainText(my_text)
         except:
-            self.errorMessage('Vstup nesmí být prázdný!')
+            self.error_message('Ani klíč ani vstup nesmí být prázdný!')
 
         
     def decodeButtonClicked(self):
         try:
             lang = self.check_lang()
-            alphabet = self.tableWidget_into_list()#add remove numbers, remove duplicates
+            alphabet = self.tableWidget_into_list()
+            if self.check_table(lang, alphabet) == -1: return -1
             my_text = self.inputText.toPlainText()
+            if self.check_decode_input(my_text, lang, alphabet) == -1: return -1
             key = self.inputKey.text()
             key = self.format_key(key, lang, alphabet)
             sorted_key_list = self.make_key_list(key)
-            
-            if len(my_text) < len(key):
-                self.errorMessage('Vstup musí být alespoň stejně dlouhý jak klíč!')
-                return -1
-            
             #decode
             trans_table = self.make_decode_trans_table(my_text, key)
             ordered_trans_list = self.decode_trans_list_order(sorted_key_list, trans_table)
@@ -427,7 +467,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             my_text = self.format_input_output(my_text, lang, False, alphabet)
             self.outputText.setPlainText(my_text)
         except:
-            self.errorMessage('Vstup nesmí být prázdný!')
+            self.error_message('Vstup nesmí být prázdný!')
             
             
     def randTableButtonClicked(self):            
@@ -458,7 +498,6 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.modeButtonSix.clicked.connect(self.choose_mode_six)
 
 
-     
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
