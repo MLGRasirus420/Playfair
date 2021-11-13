@@ -221,7 +221,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def format_key(self, key, lang, alphabet):
         key = key.upper()
         key = self.remove_accents(key)
-        key = self.replace_extra_character(key, lang)
+        if self.mode == True:
+             key = self.replace_extra_character(key, lang)
         key = self.remove_non_letters(key, alphabet)
         return key
     
