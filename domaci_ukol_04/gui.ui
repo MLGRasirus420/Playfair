@@ -7,8 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>800</height>
+    <height>500</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1200</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1200</width>
+    <height>500</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>RSA</string>
@@ -18,7 +30,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>310</y>
+      <y>285</y>
       <width>200</width>
       <height>25</height>
      </rect>
@@ -30,119 +42,77 @@
    <widget class="QTextEdit" name="inputText">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>50</y>
-      <width>361</width>
-      <height>451</height>
+      <x>20</x>
+      <y>25</y>
+      <width>420</width>
+      <height>450</height>
      </rect>
+    </property>
+    <property name="placeholderText">
+     <string>Vstup</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="outputText">
     <property name="geometry">
      <rect>
       <x>760</x>
-      <y>30</y>
-      <width>341</width>
-      <height>481</height>
+      <y>25</y>
+      <width>420</width>
+      <height>450</height>
      </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Výstup</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="nLine">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>180</y>
-      <width>225</width>
+      <x>450</x>
+      <y>155</y>
+      <width>300</width>
       <height>20</height>
      </rect>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>N</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="dLine">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>210</y>
-      <width>225</width>
+      <x>450</x>
+      <y>185</y>
+      <width>300</width>
       <height>20</height>
      </rect>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>D</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="eLine">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>240</y>
-      <width>225</width>
+      <x>450</x>
+      <y>215</y>
+      <width>300</width>
       <height>20</height>
      </rect>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>180</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>N</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>210</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>D</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>240</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
+    <property name="placeholderText">
      <string>E</string>
     </property>
    </widget>
@@ -150,7 +120,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>340</y>
+      <y>315</y>
       <width>200</width>
       <height>25</height>
      </rect>
@@ -163,7 +133,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>280</y>
+      <y>255</y>
       <width>200</width>
       <height>25</height>
      </rect>
@@ -172,18 +142,54 @@
      <string>Vygeneruj náhodné</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>35</y>
+      <width>200</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial Black</family>
+      <pointsize>60</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#eeeeee;&quot;&gt;RSA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1200</width>
+      <height>500</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-image: url(ufoni.jpg) 0 0 0 0 stretch stretch;</string>
+    </property>
+   </widget>
+   <zorder>graphicsView</zorder>
+   <zorder>encodeButton</zorder>
+   <zorder>inputText</zorder>
+   <zorder>outputText</zorder>
+   <zorder>nLine</zorder>
+   <zorder>dLine</zorder>
+   <zorder>eLine</zorder>
+   <zorder>decodeButton</zorder>
+   <zorder>randGenButton</zorder>
+   <zorder>label_4</zorder>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1200</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
