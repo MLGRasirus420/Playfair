@@ -1,7 +1,9 @@
 import sys
 import hashlib
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
+from PyQt5.QtWidgets import(QApplication, QMainWindow, QMessageBox,
+QFileDialog)
 from PyQt5 import QtGui, uic
+from PyQt5 import QtWidgets
 
 
 qtCreatorFile = "gui.ui" # Enter file here.
@@ -21,9 +23,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return (file_hash.hexdigest()) # Get the hexadecimal digest of the hash
     
     def openFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
+        fileName = QFileDialog.getOpenFileName()
+        if fileName:
+            return fileName[0]
+        
+    def openDirectoryNameDialog(self):
+        fileName = QFileDialog.getExistingDirectory(self, caption='Select a folder')
         if fileName:
             return fileName
         
@@ -33,19 +38,30 @@ class MyApp(QMainWindow, Ui_MainWindow):
         error_message.setWindowTitle('Chyba!')
         error_message.exec()
         
-    def chooseFileButton_clicked(self, line):
+    def chooseFileButton_clicked(self):
         file = self.openFileNameDialog()
-        if line == 0:
-            self.filePath.setText(file)
-        elif line == 1:
-            self.zipFilePath.setText(file)
+        self.filePath.setText(file)
+
+        
+    def chooseDirectoryButton_clicked(self):
+        file = self.openDirectoryNameDialog()
+        self.DirectoryPath.setText(file)
+        
+    
+    def generate_hash(self):
+        #zkontrolovat cesty
+        
+        return 0    
+    
     
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.chooseFileButton.clicked.connect(self.chooseFileButton_clicked, 0)
-        self.chooseFileButton_2.clicked.connect(self.chooseFileButton_clicked, 1)
+        self.chooseFileButton.clicked.connect(self.chooseFileButton_clicked)
+        self.chooseDirectoryButton.clicked.connect(self.chooseDirectoryButton_clicked)
+        self.generateHashButton.clicked.connect(self.generate_hash)
+        
      
         
 if __name__ == "__main__":

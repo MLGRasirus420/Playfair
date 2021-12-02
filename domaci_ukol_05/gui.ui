@@ -66,7 +66,7 @@
      <string>.zip soubor s hashem bude uložen do:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="zipFilePath">
+   <widget class="QLineEdit" name="DirectoryPath">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -79,7 +79,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="chooseFileButton_2">
+   <widget class="QPushButton" name="chooseDirectoryButton">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -89,7 +89,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Vyberte soubor</string>
+     <string>Vyberte složku</string>
     </property>
    </widget>
    <widget class="QPushButton" name="generateHashButton">
