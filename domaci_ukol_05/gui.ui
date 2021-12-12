@@ -53,50 +53,11 @@
      <string>Soubor k podepsání:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>240</y>
-      <width>201</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>.zip soubor s podpisem bude uložen do:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="DirectoryPath">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>260</y>
-      <width>361</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="chooseDirectoryButton">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>290</y>
-      <width>91</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Vyberte složku</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="signButton">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>460</y>
+      <y>310</y>
       <width>91</width>
       <height>23</height>
      </rect>
@@ -109,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>380</y>
+      <y>280</y>
       <width>161</width>
       <height>23</height>
      </rect>
@@ -122,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>380</y>
+      <y>280</y>
       <width>91</width>
       <height>23</height>
      </rect>
@@ -135,7 +96,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>350</y>
+      <y>250</y>
       <width>361</width>
       <height>20</height>
      </rect>
@@ -148,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>330</y>
+      <y>230</y>
       <width>271</width>
       <height>16</height>
      </rect>
@@ -157,31 +118,47 @@
      <string>Soukromý klíč pro zašifrování RSA:</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuPodpis">
-    <property name="title">
-     <string>Podpis</string>
+   <widget class="QRadioButton" name="signRadio">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>100</y>
+      <width>82</width>
+      <height>17</height>
+     </rect>
     </property>
+    <property name="text">
+     <string>Podepsání</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
    </widget>
-   <widget class="QMenu" name="menuOvereni">
-    <property name="title">
+   <widget class="QRadioButton" name="verificationRadio">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>100</y>
+      <width>82</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
      <string>Ověření</string>
     </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
    </widget>
-   <addaction name="menuPodpis"/>
-   <addaction name="menuOvereni"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

@@ -91,10 +91,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.error_message('Něco se pokazilo!')
         
         
-    def decrypt(self, my_text, n, d):
+    def decrypt(self, my_text, n, e):
         i = 0
         for item in my_text:
-            my_text[i] = pow(int(item), int(d), int(n))
+            my_text[i] = pow(int(item), int(e), int(n))
             i += 1
         return my_text
     
@@ -124,10 +124,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             n = self.nLine.text()
             if self.check_for_empty_input(n, 'Prázdný klíč N! Pro dešifrování je '
                                           'potřeba zadat N a D.') == -1: return -1
-            d = self.dLine.text()
-            if self.check_for_empty_input(d, 'Prázdný klíč D! Pro šifrování je '
+            e = self.eLine.text()
+            if self.check_for_empty_input(e, 'Prázdný klíč D! Pro šifrování je '
                                           'potřeba zadat N a D.') == -1: return -1
-            my_text = self.decrypt(my_text, n, d)
+            my_text = self.decrypt(my_text, n, e)
             my_text = self.decode_transformation(my_text)
             self.outputText.setPlainText(my_text)
         except ValueError:

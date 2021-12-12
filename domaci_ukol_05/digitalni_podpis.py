@@ -7,7 +7,9 @@ from PyQt5 import QtWidgets
 from sympy import randprime, totient
 from math import gcd
 from random import randint
-
+import base64
+from zipfile import ZipFile
+import os
 
 qtCreatorFile = "gui.ui" # Enter file here.
  
@@ -80,20 +82,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
     def encodeButton_clicked(self, my_text, n, d):
         try:
-            my_text = self.inputText.toPlainText()
-            if self.check_for_empty_input(my_text, 'Prázdný vstup!') == -1: return -1
-            n = self.nLine.text()
-            if self.check_for_empty_input(n, 'Prázdný klíč N! Pro šifrování je '
-                                       'potřeba zadat N a D.') == -1: return -1
-            d = self.dLine.text()
-            if self.check_for_empty_input(d, 'Prázdný klíč D! Pro šifrování je '
-                                       'potřeba zadat N a D.') == -1: return -1
             my_text = self.encrypt(my_text, n, d)
             finished_text = ''
             for item in my_text:
                 finished_text += str(item) + ' '
             finished_text = finished_text.rstrip()
-            self.outputText.setPlainText(finished_text)
+            return finished_text
         except ValueError:
             self.error_message('Něco se pokazilo!')
         
@@ -165,21 +159,27 @@ class MyApp(QMainWindow, Ui_MainWindow):
         if fileName:
             return fileName
         
+        
     def error_message(self, message):
         error_message = QMessageBox()
         error_message.setText(message)
         error_message.setWindowTitle('Chyba!')
         error_message.exec()
         
+    
+    #filedialog soubor pro podpis
     def chooseFileButton_clicked(self):
         file = self.openFileNameDialog()
         self.filePath.setText(file)
 
-        
+    
+    #filedialog slozka pro zip    
     def chooseDirectoryButton_clicked(self):
         file = self.openDirectoryNameDialog()
         self.DirectoryPath.setText(file)
+     
         
+    #file dialog pro klic
     def chooseKeyFileButton_clicked(self):
         file = self.openFileNameDialog()
         self.keyPath.setText(file)
@@ -192,10 +192,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             d = n_d_e[1]
             e = n_d_e[2]
             
-            with open('private_key.priv', 'x') as f:
+            with open('private_key.priv', 'w') as f:
                 f.write(n + '\n')
                 f.write(d)
-            with open('public_key.pub', 'x') as f:
+            with open('public_key.pub', 'w') as f:
                 f.write(n + '\n')
                 f.write(e)
                 
@@ -217,7 +217,18 @@ class MyApp(QMainWindow, Ui_MainWindow):
         d = n_d[1]
         hashcode = self.encodeButton_clicked(hashcode, n, d)
         print(hashcode)
-  
+        hashcode = base64.b64encode (bytes(hashcode, "utf-8"))
+        print(hashcode)
+        head, tail = os.path.split(file)
+        with open('digital_signature.sign', 'wb') as f:
+            f.write(hashcode)
+            
+        zip_obj = ZipFile('digital_signature.zip', 'w')
+        zip_obj.write('digital_signature.sign')
+        zip_obj.write(tail)
+        zip_obj.close()
+        
+        os.remove('digital_signature.sign')
     
     def message(self, title, message):
         error_message = QMessageBox()
@@ -226,15 +237,24 @@ class MyApp(QMainWindow, Ui_MainWindow):
         error_message.exec()
         
         
+    def signRadio_clicked(self):
+        print('moje hovno')
+        
+        
+    def verificationRadio_clicked(self):
+        print('tvoje hovno')    
+        
+        
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.chooseFileButton.clicked.connect(self.chooseFileButton_clicked)
-        self.chooseDirectoryButton.clicked.connect(self.chooseDirectoryButton_clicked)
         self.chooseKeyFileButton.clicked.connect(self.chooseKeyFileButton_clicked)
         self.generateKeyFilesButton.clicked.connect(self.generateKeyFilesButton_clicked)
         self.signButton.clicked.connect(self.sign_file)
+        self.signRadio.clicked.connect(self.signRadio_clicked)
+        self.verificationRadio.clicked.connect(self.verificationRadio_clicked)
         
      
         
