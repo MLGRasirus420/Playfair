@@ -1,5 +1,7 @@
 import hashlib
 import sys
+import os
+
 
 def get_hash(file):
         BLOCK_SIZE = 65536 # The size of each read from the file
@@ -13,4 +15,8 @@ def get_hash(file):
 
 file = 'testovacisoubor.txt'
 print(get_hash(file))
-print(sys.argv[0])
+path = sys.argv[0]
+head, tail = os.path.split(path)
+print(head)
+print(tail)
+print(path)

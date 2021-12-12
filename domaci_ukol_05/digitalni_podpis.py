@@ -266,8 +266,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
                              'manipulováno.')
         except FileNotFoundError:
             self.message('Chyba!', 'Soubor neexistuje!')
-        #except:
-        #    self.message('Chyba!', 'Něco se pokazilo.')
+        except (IndexError, UnicodeDecodeError):
+            self.message('Chyba!', 'Problém s klíčem! Doporučuji vytvořit nové'
+                         ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
+        except:
+           self.message('Chyba!', 'Něco se pokazilo.')
             
             
     def message(self, title, message):
