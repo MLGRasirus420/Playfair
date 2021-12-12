@@ -203,11 +203,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
             hashcode = self.get_hash(file)
             key_file = self.keyPath.text()
             n_d = []
-            with open(key_file) as f:
+            with open(key_file) as f:#brani klicu ze souboru
                 for line in f:
                     n_d.append(line)
             n = n_d[0].rstrip()
             d = n_d[1]
+            #encode hashe pomoci RSA
             hashcode = self.encodeButton_clicked(hashcode, n, d)
             hashcode = base64.b64encode (bytes(hashcode, "utf-8"))
             head, tail = os.path.split(file)
@@ -233,8 +234,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         except (IndexError, UnicodeDecodeError):
             self.message('Chyba!', 'Problém s klíčem! Doporučuji vytvořit nové'
                          ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
-        except:
-           self.message('Chyba!', 'Něco se pokazilo.')
+        #except:
+        #   self.message('Chyba!', 'Něco se pokazilo.')
     
     
     def verify_file(self):
@@ -242,11 +243,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
             zip_file = self.filePath.text()
             key_file = self.keyPath.text()
             n_e = []
-            with open(key_file) as f:
+            with open(key_file) as f:#brani klicu ze souboru
                 for line in f:
                     n_e.append(line)
             n = n_e[0].rstrip()
             e = n_e[1]
+            #zjisti co je co v zipu
             with ZipFile(zip_file, 'r') as my_zip:
                 zip_files = my_zip.namelist()
             signature = zip_files.index('digital_signature.sign')
@@ -270,8 +272,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
         except (IndexError, UnicodeDecodeError):
             self.message('Chyba!', 'Problém s klíčem! Doporučuji vytvořit nové'
                          ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
-        except:
-           self.message('Chyba!', 'Něco se pokazilo.')
+        except ValueError:
+            self.message('Chyba!', 'V zipu chybí digitální podpis!')
+        #except:
+        #   self.message('Chyba!', 'Něco se pokazilo.')
             
             
     def message(self, title, message):
@@ -293,6 +297,13 @@ class MyApp(QMainWindow, Ui_MainWindow):
         head, tail = os.path.split(sys.argv[0])
         return head
     
+    
+    def copy_file(self, file):
+        try:
+            program_path = self.get_program_path()
+            copy2(file, program_path)
+        except:
+            pass
     
     def __init__(self):
         QMainWindow.__init__(self)
