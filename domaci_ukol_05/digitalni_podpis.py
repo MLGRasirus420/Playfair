@@ -10,7 +10,10 @@ from random import randint
 import base64
 from zipfile import ZipFile
 import os
-from shutil import copy2
+from shutil import copy2, SameFileError
+
+class TooManyFiles(Exception):
+        pass
 
 qtCreatorFile = "gui.ui" # Enter file here.
  
@@ -147,20 +150,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         if fileName:
             return fileName[0]
         
-    #vyber slozky
-    def openDirectoryNameDialog(self):
-        fileName = QFileDialog.getExistingDirectory(self, caption='Select a folder')
-        if fileName:
-            return fileName
         
-        
-    def error_message(self, message):
-        error_message = QMessageBox()
-        error_message.setText(message)
-        error_message.setWindowTitle('Chyba!')
-        error_message.exec()
-        
-    
     #filedialog soubor pro podpis
     def chooseFileButton_clicked(self):
         file = self.openFileNameDialog()
@@ -215,8 +205,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             with open('digital_signature.sign', 'wb') as f:
                 f.write(hashcode)
             #kopie souboru pro ulozeni do zipu
-            program_path = self.get_program_path()
-            copy2(file, program_path)
+            self.copy_file(file)
             #vytvoreni zipu
             zip_obj = ZipFile('digital_signature.zip', 'w')
             zip_obj.write('digital_signature.sign')
@@ -234,8 +223,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         except (IndexError, UnicodeDecodeError):
             self.message('Chyba!', 'Problém s klíčem! Doporučuji vytvořit nové'
                          ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
-        #except:
-        #   self.message('Chyba!', 'Něco se pokazilo.')
+        except:
+           self.message('Chyba!', 'Něco se pokazilo.')
     
     
     def verify_file(self):
@@ -251,19 +240,25 @@ class MyApp(QMainWindow, Ui_MainWindow):
             #zjisti co je co v zipu
             with ZipFile(zip_file, 'r') as my_zip:
                 zip_files = my_zip.namelist()
+            
+            #kontrola zipu
+            if len(zip_files) > 2:
+                raise TooManyFiles
+            
+            #pokracovani patrani co je co
             signature = zip_files.index('digital_signature.sign')
             signature = zip_files.pop(signature)
             file = zip_files.pop(0)
             with ZipFile(zip_file, 'r') as my_zip:
                 hashcode = my_zip.read(signature)#zasifrovany hash co prisel se souborem
-                my_zip.extract(file)
+                my_zip.extract(file)#nachvilku si ho vytahnu, neprisel jsem na to jak se podivat do zipu
             new_hashcode = self.get_hash(file)
-            os.remove(file)
-            hashcode = base64.b64decode(hashcode).decode("utf-8") 
-            hashcode = self.decodeButton_clicked(hashcode, n, e)
-            hashcode = hashcode.replace('\x00', '')
+            os.remove(file)#extrahovanou kopii mazu
+            hashcode = base64.b64decode(hashcode).decode("utf-8")#z5 na string
+            hashcode = self.decodeButton_clicked(hashcode, n, e)#desifrovani RSA
+            hashcode = hashcode.replace('\x00', '')#fantom
             if hashcode == new_hashcode:
-                self.message('Oznamení!', 'Hash je stejný. Soubor je nezměněn.')
+                self.message('Oznamení!', 'Hash je stejný. Soubor nebyl pozměněn.')
             else:
                 self.message('Oznamení!', 'Hash se liší! Se souborem bylo '
                              'manipulováno.')
@@ -274,8 +269,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
                          ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
         except ValueError:
             self.message('Chyba!', 'V zipu chybí digitální podpis!')
-        #except:
-        #   self.message('Chyba!', 'Něco se pokazilo.')
+        except TooManyFiles:
+            self.message('Chyba!', 'V zipu je moc souborů. V zipu by měly být'
+                          ' dva soubory. Soubor .sign a podepsaný soubor.')
+        except:
+           self.message('Chyba!', 'Něco se pokazilo.')
             
             
     def message(self, title, message):
@@ -299,10 +297,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
     
     
     def copy_file(self, file):
+        #pokud je soubor nakopirovany ve slozce s programem tak se kopie nedela
         try:
             program_path = self.get_program_path()
             copy2(file, program_path)
-        except:
+        except SameFileError:
             pass
     
     def __init__(self):
