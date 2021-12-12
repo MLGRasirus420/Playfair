@@ -224,13 +224,16 @@ class MyApp(QMainWindow, Ui_MainWindow):
             os.remove('digital_signature.sign')
             os.remove(file)
             
-            self.message('Hotovo!', tail + 'a elektronický podpis: '
+            self.message('Hotovo!', tail + ' a elektronický podpis: '
                          'digital_signature.sign byly uloženy do archivu: '
                          'digital_signature.zip.')  
         except FileNotFoundError:
             self.message('Chyba!', 'Soubor neexistuje!')
+        except (IndexError, UnicodeDecodeError):
+            self.message('Chyba!', 'Problém s klíčem! Doporučuji vytvořit nové'
+                         ' klíče pomocí tlačítka: Vygenerovat soubory s klíči.')
         except:
-            self.message('Chyba!', 'Něco se pokazilo.')
+           self.message('Chyba!', 'Něco se pokazilo.')
     
     
     def verify_file(self):
@@ -263,8 +266,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
                              'manipulováno.')
         except FileNotFoundError:
             self.message('Chyba!', 'Soubor neexistuje!')
-        except:
-            self.message('Chyba!', 'Něco se pokazilo.')
+        #except:
+        #    self.message('Chyba!', 'Něco se pokazilo.')
             
             
     def message(self, title, message):
