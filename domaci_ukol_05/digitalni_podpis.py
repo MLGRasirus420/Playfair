@@ -118,19 +118,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
         return decoded_text
     
     
-    def decodeButton_clicked(self):
+    def decodeButton_clicked(self, my_text, n, e):
         try:
-            my_text = self.inputText.toPlainText().split(' ')
-            if self.check_for_empty_input(my_text, 'Prázdný vstup!') == -1: return -1
-            n = self.nLine.text()
-            if self.check_for_empty_input(n, 'Prázdný klíč N! Pro dešifrování je '
-                                          'potřeba zadat N a E.') == -1: return -1
-            e = self.eLine.text()
-            if self.check_for_empty_input(e, 'Prázdný klíč E! Pro šifrování je '
-                                          'potřeba zadat N a E.') == -1: return -1
+            my_text = my_text.split(' ')
             my_text = self.decrypt(my_text, n, e)
             my_text = self.decode_transformation(my_text)
-            self.outputText.setPlainText(my_text)
+            return my_text
         except ValueError:
             self.error_message('Při dešifrování musí být vstup INT!')
     
@@ -197,39 +190,83 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 f.write(d)
             with open('public_key.pub', 'w') as f:
                 f.write(n + '\n')
-                f.write(e)
-                
+                f.write(e)         
             self.message('Hotovo!', 'Vytvořeny soubory private_key.priv a public_key.pub ve složce s programem.')
-        except FileExistsError:
-            self.message('Chyba!', 'Soubory už existují.')
+        except:
+            self.message('Chyba!', 'Něco se pokazilo.')
         
     
     def sign_file(self):
         #zkontrolovat cesty
-        file = self.filePath.text()
-        hashcode = self.get_hash(file)
-        key_file = self.keyPath.text()
-        n_d = []
-        with open(key_file) as f:
-            for line in f:
-                n_d.append(line)
-        n = n_d[0].rstrip()
-        d = n_d[1]
-        hashcode = self.encodeButton_clicked(hashcode, n, d)
-        print(hashcode)
-        hashcode = base64.b64encode (bytes(hashcode, "utf-8"))
-        print(hashcode)
-        head, tail = os.path.split(file)
-        with open('digital_signature.sign', 'wb') as f:
-            f.write(hashcode)
+        try:
+            file = self.filePath.text()
+            hashcode = self.get_hash(file)
+            key_file = self.keyPath.text()
+            n_d = []
+            with open(key_file) as f:
+                for line in f:
+                    n_d.append(line)
+            n = n_d[0].rstrip()
+            d = n_d[1]
+            hashcode = self.encodeButton_clicked(hashcode, n, d)
+            print(hashcode)
+            hashcode = base64.b64encode (bytes(hashcode, "utf-8"))
+            print(hashcode)
+            head, tail = os.path.split(file)
+            with open('digital_signature.sign', 'wb') as f:
+                f.write(hashcode)
+                
+            zip_obj = ZipFile('digital_signature.zip', 'w')
+            zip_obj.write('digital_signature.sign')
+            zip_obj.write(tail)
+            zip_obj.close()
             
-        zip_obj = ZipFile('digital_signature.zip', 'w')
-        zip_obj.write('digital_signature.sign')
-        zip_obj.write(tail)
-        zip_obj.close()
-        
-        os.remove('digital_signature.sign')
+            os.remove('digital_signature.sign')
+            os.remove(file)
+            
+            self.message('Hotovo!', tail + 'a elektronický podpis: '
+                         'digital_signature.sign byly uloženy do archivu: '
+                         'digital_signature.zip.')  
+        except FileNotFoundError:
+            self.message('Chyba!', 'Soubor neexistuje!')
+        except:
+            self.message('Chyba!', 'Něco se pokazilo.')
     
+    
+    def verify_file(self):
+        try:
+            zip_file = self.filePath.text()
+            key_file = self.keyPath.text()
+            n_e = []
+            with open(key_file) as f:
+                for line in f:
+                    n_e.append(line)
+            n = n_e[0].rstrip()
+            e = n_e[1]
+            with ZipFile(zip_file, 'r') as my_zip:
+                zip_files = my_zip.namelist()
+            signature = zip_files.index('digital_signature.sign')
+            signature = zip_files.pop(signature)
+            file = zip_files.pop(0)
+            with ZipFile(zip_file, 'r') as my_zip:
+                hashcode = my_zip.read(signature)#zasifrovany hash co prisel se souborem
+                my_zip.extract(file)
+            new_hashcode = self.get_hash(file)
+            os.remove(file)
+            hashcode = base64.b64decode(hashcode).decode("utf-8") 
+            hashcode = self.decodeButton_clicked(hashcode, n, e)
+            hashcode = hashcode.replace('\x00', '')
+            if hashcode == new_hashcode:
+                self.message('Oznamení!', 'Hash je stejný. Soubor je nezměněn.')
+            else:
+                self.message('Oznamení!', 'Hash se liší! Se souborem bylo '
+                             'manipulováno.')
+        except FileNotFoundError:
+            self.message('Chyba!', 'Soubor neexistuje!')
+        except:
+            self.message('Chyba!', 'Něco se pokazilo.')
+            
+            
     def message(self, title, message):
         error_message = QMessageBox()
         error_message.setText(message)
@@ -255,6 +292,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.signButton.clicked.connect(self.sign_file)
         self.signRadio.clicked.connect(self.signRadio_clicked)
         self.verificationRadio.clicked.connect(self.verificationRadio_clicked)
+        self.verifyButton.clicked.connect(self.verify_file)
         
      
         
