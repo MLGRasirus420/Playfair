@@ -10,6 +10,7 @@ from random import randint
 import base64
 from zipfile import ZipFile
 import os
+from shutil import copy2
 
 qtCreatorFile = "gui.ui" # Enter file here.
  
@@ -213,7 +214,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
             head, tail = os.path.split(file)
             with open('digital_signature.sign', 'wb') as f:
                 f.write(hashcode)
-                
+            
+            #kopie souboru pro ulozeni do zipu
+            copy2(file, self.get_program_path)
+            
             zip_obj = ZipFile('digital_signature.zip', 'w')
             zip_obj.write('digital_signature.sign')
             zip_obj.write(tail)
@@ -287,7 +291,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
         
     def get_program_path(self):
-        return 0
+        head, tail = os.path.split(sys.argv[0])
+        return head
+    
     
     def __init__(self):
         QMainWindow.__init__(self)

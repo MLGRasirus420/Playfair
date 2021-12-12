@@ -17,6 +17,6 @@ file = 'testovacisoubor.txt'
 print(get_hash(file))
 path = sys.argv[0]
 head, tail = os.path.split(path)
-print(head)
+print('head:' + head)
 print(tail)
 print(path)
