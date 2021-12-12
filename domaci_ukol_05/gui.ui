@@ -45,12 +45,12 @@
      <rect>
       <x>160</x>
       <y>140</y>
-      <width>81</width>
+      <width>101</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Nahraný soubor:</string>
+     <string>Soubor k podepsání:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -58,12 +58,12 @@
      <rect>
       <x>160</x>
       <y>240</y>
-      <width>181</width>
+      <width>201</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>.zip soubor s hashem bude uložen do:</string>
+     <string>.zip soubor s podpisem bude uložen do:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="DirectoryPath">
@@ -92,17 +92,69 @@
      <string>Vyberte složku</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="generateHashButton">
+   <widget class="QPushButton" name="signButton">
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>320</y>
+      <y>460</y>
       <width>91</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Vygeneruj hash</string>
+     <string>Podepiš</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="generateKeyFilesButton">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>380</y>
+      <width>161</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vygenerovat soubory s klíči</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="chooseKeyFileButton">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>380</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vyberte soubor</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="keyPath">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>350</y>
+      <width>361</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label1_2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>330</y>
+      <width>271</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Soukromý klíč pro zašifrování RSA:</string>
     </property>
    </widget>
   </widget>
@@ -115,18 +167,18 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuPodpsi">
+   <widget class="QMenu" name="menuPodpis">
     <property name="title">
      <string>Podpis</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuOv_en">
+   <widget class="QMenu" name="menuOvereni">
     <property name="title">
      <string>Ověření</string>
     </property>
    </widget>
-   <addaction name="menuPodpsi"/>
-   <addaction name="menuOv_en"/>
+   <addaction name="menuPodpis"/>
+   <addaction name="menuOvereni"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
