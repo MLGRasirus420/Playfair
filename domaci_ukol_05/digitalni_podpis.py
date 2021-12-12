@@ -209,9 +209,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             n = n_d[0].rstrip()
             d = n_d[1]
             hashcode = self.encodeButton_clicked(hashcode, n, d)
-            print(hashcode)
             hashcode = base64.b64encode (bytes(hashcode, "utf-8"))
-            print(hashcode)
             head, tail = os.path.split(file)
             with open('digital_signature.sign', 'wb') as f:
                 f.write(hashcode)
@@ -288,6 +286,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
         print('tvoje hovno')    
         
         
+    def get_program_path(self):
+        return 0
+    
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
