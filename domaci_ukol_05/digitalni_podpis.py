@@ -198,7 +198,6 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
     
     def sign_file(self):
-        #zkontrolovat cesty
         try:
             file = self.filePath.text()
             hashcode = self.get_hash(file)
@@ -214,17 +213,17 @@ class MyApp(QMainWindow, Ui_MainWindow):
             head, tail = os.path.split(file)
             with open('digital_signature.sign', 'wb') as f:
                 f.write(hashcode)
-            
             #kopie souboru pro ulozeni do zipu
-            copy2(file, self.get_program_path)
-            
+            program_path = self.get_program_path()
+            copy2(file, program_path)
+            #vytvoreni zipu
             zip_obj = ZipFile('digital_signature.zip', 'w')
             zip_obj.write('digital_signature.sign')
             zip_obj.write(tail)
             zip_obj.close()
-            
+            #smazani kopii
             os.remove('digital_signature.sign')
-            os.remove(file)
+            os.remove(tail)
             
             self.message('Hotovo!', tail + ' a elektronický podpis: '
                          'digital_signature.sign byly uloženy do archivu: '
